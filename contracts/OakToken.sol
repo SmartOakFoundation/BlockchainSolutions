@@ -9,7 +9,7 @@ contract OakToken is MintableToken{
     string public name = "Oak Token";
     uint8 public decimals = 0;
 	address public fundationAddress;
-	uint8 public yearlyInflationRate;
+	uint8 public yearlyInflationRateInPercent;
 	uint256 publictimeTokenStarted;
 	uint256 timeTokenStarted;
 	uint256 public tokensCreated;
@@ -23,13 +23,14 @@ contract OakToken is MintableToken{
 	
 	function init(){
 		require(totalSupply()==0);
+		yearlyInflationRateInPercent = 5;
 		this.mint(fundationAddress,TOKEN_INITIAL_AMOUNT);
 	}
 	
 	
 	function () {
 		uint256 _timePassedSinceCreated = now - tokensCreated;
-		uint256 newTokensAmount = _timePassedSinceCreated*TOKEN_INITIAL_AMOUNT/100*yearlyInflationRate/NUMBER_OF_SECONDR_IN_A_YEAR;
+		uint256 newTokensAmount = _timePassedSinceCreated*TOKEN_INITIAL_AMOUNT/100*yearlyInflationRateInPercent/NUMBER_OF_SECONDR_IN_A_YEAR;
 		this.mint(fundationAddress,newTokensAmount-tokensCreated);
 	}
 	
