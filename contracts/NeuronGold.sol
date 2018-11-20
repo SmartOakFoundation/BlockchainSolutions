@@ -25,21 +25,6 @@ contract NeuronGold is SmartOakMintable {
 		tokensCreated = now;
 	}
 	
-	function init(){
-		require(totalSupply()==0);
-		this.mint(fundationAddress,TOKEN_INITIAL_AMOUNT);
-	}
-	
-	
-	function generateNew() public{
-		uint256 weekComputed = (now - tokensCreated)/NUMBER_OF_SECONDR_IN_A_WEEK;
-		if(weekComputed!=weekFunded){ // max once per week can mint portion for next round of crowdsale 
-			weekFunded = weekComputed;
-			this.mint(crowdsaleAddress,(TOKEN_TOTAL_AMOUNT-totalSupply()/DIVIDER));
-		}
-	}
-	
-	
     function burn(uint256 amount) public {
 		_burn(msg.sender,amount);
     }
