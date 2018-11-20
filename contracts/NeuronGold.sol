@@ -23,7 +23,6 @@ contract NeuronGold is SmartOakMintable {
 		crowdsaleAddress = _crowdsaleAddress;
 		fundationAddress = _fundationAddress;
 		tokensCreated = now;
-		owner = address(this);
 	}
 	
 	function init(){
@@ -42,9 +41,6 @@ contract NeuronGold is SmartOakMintable {
 	
 	
     function burn(uint256 amount) public {
-        require(balanceOf(msg.sender)>=amount);
-        totalSupply_ = totalSupply_.sub(amount);
-        balances[msg.sender] = balances[msg.sender].sub(amount);
-		emit Transfer(msg.sender,address(0),amount);
+		_burn(msg.sender,amount);
     }
 }

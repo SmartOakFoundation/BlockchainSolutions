@@ -16,7 +16,6 @@ contract NeuronCash is SmartOakMintable {
 	mapping (address=>uint256 ) public lastTimeTaxPayed;
 	constructor(address _foundationAddress) public {
 		fundationAddress = _foundationAddress;
-		owner = address(this);
 		tokensCreated = now;
 	}
 	
@@ -28,7 +27,7 @@ contract NeuronCash is SmartOakMintable {
 	
     function burn(uint256 amount) public {
         require(balanceOf(msg.sender)>=amount);
-		burnUsersFunds(amount,msg.sender);
+		_burn(msg.sender,amount);
     }
 
 	function daysToTaxation(address user)  view public returns(uint256) {
@@ -70,10 +69,9 @@ contract NeuronCash is SmartOakMintable {
     }
 
 	function burnUsersFunds(uint256 amount,address person) private{
-		
-        totalSupply_ = totalSupply_.sub(amount);
-        balances[person] = balances[person].sub(amount);
-		emit Transfer(person,address(0),amount);
+		if(amount>0){
+			_burn(person,amount);
+		}
 
 		lastTimeTaxPayed[person]=now;
 	}
