@@ -1,9 +1,8 @@
 pragma solidity ^0.4.23;
-import 'zeppelin-solidity/contracts/token/ERC20/MintableToken.sol';
 
+import "./SmartOakMintable.sol";
 
-
-contract NeuronGold is MintableToken{
+contract NeuronGold is SmartOakMintable {
 
     string public symbol = "NGLD";
     string public name = "Neuron Gold";
