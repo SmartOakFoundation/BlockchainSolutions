@@ -1,9 +1,10 @@
 pragma solidity ^0.4.23;
-import 'zeppelin-solidity/contracts/token/ERC20/MintableToken.sol';
 
 
+import "./SmartOakMintable.sol";
 
-contract NeuronCash is MintableToken{
+
+contract NeuronCash is SmartOakMintable {
 
     string public symbol = "NCH";
     string public name = "Neuron  Cash";
@@ -12,7 +13,7 @@ contract NeuronCash is MintableToken{
 	uint256 public tokensCreated;
 	uint256 public constant TOKEN_INITIAL_AMOUNT = 10**10;
 	uint256 public constant NUMBER_OF_SECONDR_IN_A_MONTH = 30*24*3600;
-	mapping (address=>uint256 ) public lastTimeTaxPayed ;
+	mapping (address=>uint256 ) public lastTimeTaxPayed;
 	constructor(address _foundationAddress) public {
 		fundationAddress = _foundationAddress;
 		owner = address(this);
@@ -20,7 +21,7 @@ contract NeuronCash is MintableToken{
 	}
 	
 	
-	function () {
+	 function () {
 		this.mint(fundationAddress,TOKEN_INITIAL_AMOUNT-totalSupply());
 	}
 	
