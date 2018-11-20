@@ -30,15 +30,22 @@ contract NeuronCash is MintableToken{
 		burnUsersFunds(amount,msg.sender);
     }
 
+	function daysToTaxation(address user)  view public returns(uint256) {
+
+	// TODO: oblicza liczbê dni od ostatniego opodatkowania
+	}
+	
 	/*
 	  1% of users balance per month
+
+	  zmieniæ z liniowego na schodkowy
 	*/
-	function getTaxAmount(address user) view public returns(uint256) {
-	    uint256 lastPayed = tokensCreated;
-		if(lastTimeTaxPayed[user]>lastPayed){
-			lastPayed=lastTimeTaxPayed[user];
-		}
-		return super.balanceOf(user).mul(now-lastTimeTaxPayed[user]).div(NUMBER_OF_SECONDR_IN_A_MONTH).div(100);
+	function getTaxInfo(address user) view public returns(uint256 amountOfTax,uint256 daysToTax) {
+		return (super.balanceOf(user).div(100),daysToTaxation(user));
+	}
+
+	function getTaxAmount(address user) view private returns(uint256) {
+		return super.balanceOf(user).div(100);
 	}
 
 	/* substract tax from current balance */
