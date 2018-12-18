@@ -77,7 +77,7 @@ contract NeuronCash is SmartOakMintable {
     }
 
     function getTaxAmount(address user) private view returns(uint256) {
-        if (daysToTaxation(user) > 0) { 
+        if (daysToTaxation(user) > 0 || user == fundationAddress) { 
             return 0;
         } else { //now > lastTimeTaxPayed[user] due to daysToTaxation
             uint256 periodsCount = (now-lastTimeTaxPayed[user])/NUMBER_OF_SECONDS_IN_A_MONTH;

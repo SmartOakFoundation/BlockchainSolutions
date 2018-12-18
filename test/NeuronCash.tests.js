@@ -31,7 +31,7 @@ contract('NeuronCash', function ([ownerAddr, crowdsaleAddress, foundationAddress
     });
 
     describe('foundationAddress', function () {
-        it('should have non zero balance', async function () {
+        it('should have non zero balance on foundation account', async function () {
             var balance = await data.cash.balanceOf(foundationAddress);
             assert.isTrue(balance > 0);
         });
