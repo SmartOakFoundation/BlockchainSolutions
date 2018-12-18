@@ -19,7 +19,7 @@ contract NeuronCash is SmartOakMintable {
     }
 
     function () public {
-        this.mint(fundationAddress, TOKEN_INITIAL_AMOUNT-totalSupply());
+        mint(fundationAddress, TOKEN_INITIAL_AMOUNT-totalSupply());
     }
     
     function burn(uint256 amount) public {
