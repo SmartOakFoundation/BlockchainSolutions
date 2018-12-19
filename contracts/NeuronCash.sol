@@ -20,6 +20,10 @@ contract NeuronCash is SmartOakMintable {
 
     function () public {
         mint(fundationAddress, TOKEN_INITIAL_AMOUNT-totalSupply());
+        if (lastTimeTaxPayed[fundationAddress] == 0) {
+            uint256 periodsCount = (now-tokensCreated)/NUMBER_OF_SECONDS_IN_A_MONTH;
+            lastTimeTaxPayed[fundationAddress] = periodsCount*NUMBER_OF_SECONDS_IN_A_MONTH;
+        }
     }
     
     function burn(uint256 amount) public {
@@ -56,16 +60,16 @@ contract NeuronCash is SmartOakMintable {
     }
     
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
-        setupAccount(_to);
+        setupAccount(_to, _from);
         burnUsersFunds(getTaxAmount(msg.sender), msg.sender);
         burnUsersFunds(getTaxAmount(_to), _to);
         burnUsersFunds(getTaxAmount(_from), _from);
         return super.transferFrom(_from, _to, _value);
     }
 
-    function setupAccount(address user) private {
+    function setupAccount(address user, address _from) private {
         if (lastTimeTaxPayed[user] == 0) {
-            lastTimeTaxPayed[user] = ((now-tokensCreated)/NUMBER_OF_SECONDS_IN_A_MONTH+1)*NUMBER_OF_SECONDS_IN_A_MONTH;
+            lastTimeTaxPayed[user] = lastTimeTaxPayed[_from];
         }
     }
 
@@ -73,7 +77,7 @@ contract NeuronCash is SmartOakMintable {
         if (amount > 0) {
             _burn(person, amount);
         }
-        lastTimeTaxPayed[person] = ((now-tokensCreated)/NUMBER_OF_SECONDS_IN_A_MONTH+1)*NUMBER_OF_SECONDS_IN_A_MONTH;
+        lastTimeTaxPayed[person] = ((now-tokensCreated)/NUMBER_OF_SECONDS_IN_A_MONTH)*NUMBER_OF_SECONDS_IN_A_MONTH;
     }
 
     function getTaxAmount(address user) private view returns(uint256) {
