@@ -12,7 +12,7 @@ contract NeuronGoldEmiter {
     NeuronCash neuronCash;
     ERC20 neuronGold;
     address crowdsale;
-    
+
     //every stage of crowdsale takes a week
     uint256 public constant NUMBER_OF_SECONDR_IN_A_WEEK = 7*24*3600;
     uint256 public weekFunded = 0;
@@ -21,9 +21,8 @@ contract NeuronGoldEmiter {
     uint256 public baseSpeed;
     uint256 public constant BASE_SPEED_MODIFFIER = 1000000;
 
-    function NeuronGoldEmiter(address _neuronGold, NeuronCash _neuronCash, address _crowdsale) public {
-        neuronCash = _neuronCash;
-        neuronGold = ERC20(_neuronGold);
+    function NeuronGoldEmiter(address _neuronCash, address _crowdsale) public {
+        neuronCash = NeuronCash(_neuronCash);
         emiterCreation = now;
         crowdsale = _crowdsale;
         baseSpeed = neuronCash.getSpeed();
@@ -31,6 +30,11 @@ contract NeuronGoldEmiter {
 
     function () public {
         emitBatch();
+    }
+
+    function init(address _neuronGold) public {
+        require(address(neuronGold) == address(0), 'already initialized');
+        neuronGold = ERC20(_neuronGold);
     }
 
     function emitBatch() public {
