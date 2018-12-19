@@ -30,6 +30,10 @@ contract NeuronGoldEmiter {
     }
 
     function () public {
+        emitBatch();
+    }
+
+    function emitBatch() public {
         uint256 spendableBalance = neuronGold.balanceOf(address(this));
         uint256 currentWeek = (now-emiterCreation)/NUMBER_OF_SECONDR_IN_A_WEEK ;
         if (currentWeek != weekFunded) {
