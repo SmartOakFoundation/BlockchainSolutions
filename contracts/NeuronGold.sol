@@ -8,21 +8,13 @@ contract NeuronGold is SmartOakMintable {
     string public name = "Neuron Gold";
     uint8 public decimals = 10;
     uint256 public startTime = 0;
-    address public crowdsaleAddress;
-    address public fundationAddress;
+    address public emmiterAddress;
     uint256 public tokensCreated;
-    uint256 public constant TOKEN_TOTAL_AMOUNT = 10**18;
-    uint256 public constant TOKEN_INITIAL_AMOUNT = 10**17;
-    uint256 public constant DIVIDER = 200;
 
-    //every stage of crowdsale takes a week
-    uint256 public constant NUMBER_OF_SECONDR_IN_A_WEEK = 7*24*3600;
-    uint256 public weekFunded = 0;
-    
-    function NeuronGold(address _crowdsaleAddress, address _fundationAddress) public {
-        crowdsaleAddress = _crowdsaleAddress;
-        fundationAddress = _fundationAddress;
+    function NeuronGold(address _emmiterAddress, uint256 totalAmount) public {
+        emmiterAddress = _emmiterAddress;
         tokensCreated = now;
+        mint(_emmiterAddress, totalAmount);
     }
     
     function burn(uint256 amount) public {

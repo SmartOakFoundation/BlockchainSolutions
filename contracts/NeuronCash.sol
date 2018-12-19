@@ -4,11 +4,18 @@ import "./SmartOakMintable.sol";
 
 contract NeuronCash is SmartOakMintable {
 
+    struct Velocity {
+        uint32 lastUpdateTime;
+        uint192 velocity;
+        uint32 updateCount;
+    }
+
     string public symbol = "NCH";
     string public name = "Neuron  Cash";
-    uint8 public decimals = 2;
+    uint8 public decimals = 0;
     address public fundationAddress;
     uint256 public tokensCreated;
+    Velocity public velocity;
     uint256 public constant TOKEN_INITIAL_AMOUNT = 10**10;
     uint256 public constant NUMBER_OF_SECONDS_IN_A_MONTH = 30*24*3600;
     mapping (address=>uint256 ) public lastTimeTaxPayed;
@@ -16,13 +23,36 @@ contract NeuronCash is SmartOakMintable {
     function NeuronCash(address _foundationAddress) public {
         fundationAddress = _foundationAddress;
         tokensCreated = now;
+        velocity.lastUpdateTime = uint32(now);
+    }
+
+    function getSpeed() public view returns(uint256) {
+        return uint256(velocity.velocity);
     }
 
     function () public {
+        if (totalSupply() > 0) {
+            updateVelocity();
+        }
         mint(fundationAddress, TOKEN_INITIAL_AMOUNT-totalSupply());
         if (lastTimeTaxPayed[fundationAddress] == 0) {
             uint256 periodsCount = (now-tokensCreated)/NUMBER_OF_SECONDS_IN_A_MONTH;
             lastTimeTaxPayed[fundationAddress] = periodsCount*NUMBER_OF_SECONDS_IN_A_MONTH;
+        }
+    }
+
+    function updateVelocity() public {
+        if (now > velocity.lastUpdateTime) {
+            uint256 newAmount = TOKEN_INITIAL_AMOUNT-totalSupply();
+            newAmount = newAmount*(NUMBER_OF_SECONDS_IN_A_MONTH/(now - velocity.lastUpdateTime));
+            velocity.updateCount = velocity.updateCount+1;
+            velocity.lastUpdateTime = uint32(now);
+            uint32 multipl = velocity.updateCount+2;
+            if (multipl > 999) {
+                multipl = 999;
+            }
+            velocity.velocity = uint192((velocity.velocity*multipl+newAmount)/(multipl+1));
+            //expotential moving average
         }
     }
     
@@ -53,7 +83,7 @@ contract NeuronCash is SmartOakMintable {
     } 
         
     function transfer(address _to, uint256 _value) public returns(bool) {
-        setupAccount(_to);
+        setupAccount(_to, msg.sender);
         burnUsersFunds(getTaxAmount(msg.sender), msg.sender);
         burnUsersFunds(getTaxAmount(_to), _to);
         return super.transfer(_to, _value);
