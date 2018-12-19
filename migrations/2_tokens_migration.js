@@ -17,6 +17,14 @@ function initEmiter(nge) {
   });
 }
 
+function initNGE(nge) {
+  return nge.deployed().then(instanceGoldEmiter => {
+    instanceGoldEmiter.init(neuronGoldAddress);
+    console.log("_nge initialized...");
+    res(true);
+  });
+}
+
 function deployNGE(dep, ng) {
   return new Promise(res => {
     return dep.deploy(ng, neuronCashAddress, crowdsaleAddress).then(() => {
@@ -78,6 +86,9 @@ module.exports = function(deployer, network, accounts) {
   deployer.then(() => {
     return new Promise((res, rej) => {
       deployConteracts(deployer, NeuronCash, NeuronGold, NeuronGoldEmiter)
+        .then(() => {
+          initNGE(NeuronGoldEmiter);
+        })
         .then(() => {
           console.log("deployment successful");
           res(true);
