@@ -37,7 +37,7 @@ contract NeuronCash is SmartOakMintable {
         mint(fundationAddress, TOKEN_INITIAL_AMOUNT-totalSupply());
         if (lastTimeTaxPayed[fundationAddress] == 0) {
             uint256 periodsCount = (now-tokensCreated)/NUMBER_OF_SECONDS_IN_A_MONTH;
-            lastTimeTaxPayed[fundationAddress] = periodsCount*NUMBER_OF_SECONDS_IN_A_MONTH;
+            lastTimeTaxPayed[fundationAddress] = tokensCreated+periodsCount*NUMBER_OF_SECONDS_IN_A_MONTH;
         }
     }
 
